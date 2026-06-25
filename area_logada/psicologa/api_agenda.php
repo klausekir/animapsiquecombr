@@ -23,8 +23,10 @@ try {
     $pdo = conectar();
     $eventos = [];
     
-    $start_param = $_GET['start'] ?? date('Y-m-01');
-    $end_param = $_GET['end'] ?? date('Y-m-t');
+    $start_raw = $_GET['start'] ?? '';
+    $end_raw   = $_GET['end'] ?? '';
+    $start_param = (preg_match('/^\d{4}-\d{2}-\d{2}/', $start_raw) ? substr($start_raw, 0, 10) : date('Y-m-01'));
+    $end_param   = (preg_match('/^\d{4}-\d{2}-\d{2}/', $end_raw)   ? substr($end_raw,   0, 10) : date('Y-m-t'));
 
     $start_date_query = (new DateTime($start_param))->format('Y-m-d H:i:s');
     $end_date_query = (new DateTime($end_param))->format('Y-m-d H:i:s');

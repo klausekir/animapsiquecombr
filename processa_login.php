@@ -26,6 +26,29 @@ if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
 
 
 
+// Rate limiting: máximo 10 tentativas por IP em 15 minutos
+$ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+$rate_key = 'login_attempts_' . md5($ip);
+$rate_window = 900; // 15 minutos em segundos
+$rate_limit = 10;
+
+if (!isset($_SESSION[$rate_key])) {
+    $_SESSION[$rate_key] = ['count' => 0, 'first_attempt' => time()];
+}
+
+// Reseta a janela se já passou o tempo
+if ((time() - $_SESSION[$rate_key]['first_attempt']) > $rate_window) {
+    $_SESSION[$rate_key] = ['count' => 0, 'first_attempt' => time()];
+}
+
+if ($_SESSION[$rate_key]['count'] >= $rate_limit) {
+    $_SESSION['login_error'] = 'Muitas tentativas de login. Aguarde 15 minutos e tente novamente.';
+    header('Location: login.php');
+    exit;
+}
+
+$_SESSION[$rate_key]['count']++;
+
 // Pega os dados do formulário
 
 $email = $_POST['email'] ?? '';
@@ -101,6 +124,9 @@ try {
     // Se encontrou um usuário e a senha está correta
 
     if ($usuario) {
+
+        // Reseta o contador de tentativas após login bem-sucedido
+        unset($_SESSION[$rate_key]);
 
         // Limpa sessões antigas e regenera o ID da sessão para segurança
 

@@ -1,6 +1,5 @@
 <?php
-// Inicia a sessão para mensagens
-session_start();
+require_once '../../includes/auth_psicologa.php';
 
 // Obtém o número de campos recebidos via POST e FILES
 $total_post_vars = count($_POST);

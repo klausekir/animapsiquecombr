@@ -8,6 +8,7 @@ header('Content-Type: application/json');
 require_once '../../config.php';
 require_once '../../includes/db.php';
 require_once '../../includes/email.php';
+require_once '../../includes/csrf.php';
 
 $response = ['success' => false, 'message' => 'Ação inválida.'];
 
@@ -15,6 +16,7 @@ if (!isset($_SESSION['logged_in']) || !isset($_SESSION['user_id'])) {
     http_response_code(401); 
     exit;
 }
+csrf_validate_header();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $assunto = trim($_POST['assunto'] ?? '');

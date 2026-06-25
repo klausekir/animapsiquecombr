@@ -14,6 +14,16 @@ $success = '';
 
 $paciente = null;
 
+// Mensagens de erro vindas de processa_registro.php
+$erro_param = $_GET['error'] ?? '';
+if ($erro_param === 'empty') {
+    $error = 'Por favor, preencha todos os campos.';
+} elseif ($erro_param === 'mismatch') {
+    $error = 'As senhas não coincidem. Tente novamente.';
+} elseif ($erro_param === 'weak') {
+    $error = 'A senha deve ter pelo menos 8 caracteres.';
+}
+
 
 
 if (empty($token)) {

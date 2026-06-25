@@ -8,6 +8,8 @@ require_once '../../config.php';
 require_once '../../includes/auth_psicologa.php';
 require_once '../../includes/db.php';
 require_once '../../includes/email.php';
+require_once '../../includes/csrf.php';
+csrf_validate_post('quizzes.php');
 
 $quiz_id = filter_input(INPUT_POST, 'quiz_id', FILTER_VALIDATE_INT);
 $pacientes_ids = $_POST['pacientes_ids'] ?? [];

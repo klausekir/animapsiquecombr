@@ -1,8 +1,5 @@
 <?php
-// Ativar a exibição de todos os erros
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+require_once '../../includes/auth_psicologa.php';
 
 // Define o cabeçalho como JSON para consistência
 header('Content-Type: application/json');

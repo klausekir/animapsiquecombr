@@ -1,3 +1,4 @@
+<?php require_once '../../includes/auth_psicologa.php'; ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>

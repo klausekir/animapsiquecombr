@@ -2,6 +2,7 @@
 require_once '../../config.php';
 require_once '../../includes/auth_psicologa.php';
 require_once '../../includes/db.php';
+require_once '../../includes/csrf.php';
 
 // Diretório de upload
 define('UPLOAD_DIR', __DIR__ . '/../../uploads/site/');
@@ -13,6 +14,7 @@ function apagar_imagem_antiga($nome_imagem) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_validate_post('reportagens.php');
     $acao = $_POST['acao'] ?? '';
 
     try {
