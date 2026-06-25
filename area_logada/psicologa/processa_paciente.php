@@ -1,18 +1,4 @@
 <?php
-// Bloco de Depuração - Início
-// Este bloco irá registar os detalhes de cada requisição num arquivo de log.
-$log_file = __DIR__ . '/debug_log.txt';
-$log_data = "========================================\n";
-$log_data .= "Data/Hora: " . date("Y-m-d H:i:s") . "\n";
-$log_data .= "Método da Requisição: " . $_SERVER['REQUEST_METHOD'] . "\n";
-$log_data .= "Query String: " . $_SERVER['QUERY_STRING'] . "\n";
-$log_data .= "Dados GET: " . print_r($_GET, true) . "\n";
-$log_data .= "Dados POST: " . print_r($_POST, true) . "\n";
-$raw_input = file_get_contents('php://input');
-$log_data .= "Input Raw: " . $raw_input . "\n";
-$log_data .= "========================================\n\n";
-file_put_contents($log_file, $log_data, FILE_APPEND);
-// Bloco de Depuração - Fim
 
 
 require_once '../../includes/auth_psicologa.php';
@@ -23,6 +9,7 @@ header('Content-Type: application/json');
 // Tenta obter a ação de GET, POST ou do input raw (para o caso de JSON)
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 if (empty($action)) {
+    $raw_input = file_get_contents('php://input');
     $input_data = json_decode($raw_input, true);
     $action = $input_data['action'] ?? '';
 }
@@ -44,7 +31,7 @@ try {
                 exit;
             }
             
-            $senha_hash = !empty($senha) ? password_hash($senha, PASSWORD_DEFAULT) : null;
+            $senha_hash = !empty($senha) ? password_hash($senha, PASSWORD_ARGON2ID) : null;
 
             $stmt = $pdo->prepare("INSERT INTO pacientes (nome, email, telefone, senha) VALUES (?, ?, ?, ?)");
             $stmt->execute([$nome, $email, $telefone, $senha_hash]);
@@ -66,7 +53,7 @@ try {
             }
 
             if (!empty($senha)) {
-                $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+                $senha_hash = password_hash($senha, PASSWORD_ARGON2ID);
                 $stmt = $pdo->prepare("UPDATE pacientes SET nome = ?, email = ?, telefone = ?, senha = ? WHERE id = ?");
                 $stmt->execute([$nome, $email, $telefone, $senha_hash, $id]);
             } else {
@@ -100,6 +87,7 @@ try {
             // Lógica para deletar
             $id = $_GET['id'] ?? $_POST['id'] ?? 0;
              if (empty($id)) {
+                $raw_input = $raw_input ?? file_get_contents('php://input');
                 $input_data = json_decode($raw_input, true);
                 $id = $input_data['id'] ?? 0;
             }
@@ -135,8 +123,7 @@ try {
             break;
     }
 } catch (PDOException $e) {
-    // Registra o erro no log de depuração também
-    file_put_contents($log_file, "ERRO DE PDO: " . $e->getMessage() . "\n", FILE_APPEND);
-    echo json_encode(['success' => false, 'message' => 'Erro no banco de dados: ' . $e->getMessage()]);
+    error_log("processa_paciente.php PDO Error: " . $e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Erro no banco de dados.']);
 }
 ?>

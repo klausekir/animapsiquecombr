@@ -33,3 +33,24 @@ RewriteRule ^(.*)$ $1.php [QSA,L]
 # Redireciona permanentemente qualquer tentativa de acessar a URL com .php
 RewriteCond %{THE_REQUEST} "^GET .*\.php" [NC]
 RewriteRule ^(.*)\.php$ /$1 [R=301,L]
+
+# --- SEGURANÇA ---
+
+# Bloqueia acesso direto a arquivos sensíveis
+<FilesMatch "\.(log|txt|sql|bak|backup|old|env)$">
+    Require all denied
+</FilesMatch>
+
+# Bloqueia acesso à pasta includes/ diretamente
+<IfModule mod_rewrite.c>
+    RewriteRule ^includes/ - [F,L]
+</IfModule>
+
+# Headers de segurança HTTP
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>

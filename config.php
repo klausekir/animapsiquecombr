@@ -97,6 +97,26 @@ define('BASE_URL', 'https://animapsique.com.br');
 date_default_timezone_set('America/Sao_Paulo');
 
 
+// --- SEGURANÇA DE SESSÃO ---
+
+// Configura cookies de sessão seguros (HttpOnly, Secure, SameSite)
+session_set_cookie_params([
+    'lifetime' => 0,
+    'path'     => '/',
+    'secure'   => true,
+    'httponly' => true,
+    'samesite' => 'Strict',
+]);
+
+// Gera token CSRF na sessão se ainda não existir
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// ID do registro único da psicóloga no banco (single-tenant)
+define('PSICOLOGA_ID', 1);
+
+
 
 // --- CHAVES DE SEGURANÇA ---
 

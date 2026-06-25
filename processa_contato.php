@@ -17,6 +17,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// Valida token CSRF
+if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
+    http_response_code(403);
+    header('Location: contato.php');
+    exit;
+}
+
 // Coleta e sanitiza os dados do formulário
 $nome     = htmlspecialchars(trim(filter_input(INPUT_POST, 'nome',     FILTER_DEFAULT) ?? ''));
 $email    = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);

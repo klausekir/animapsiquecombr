@@ -54,6 +54,7 @@ require_once 'templates/header_publico.php';
             <div class="bg-white p-8 rounded-lg shadow-lg">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">Solicitar Primeira Sessão</h2>
                 <form action="processa_contato.php" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div>
                             <label for="nome" class="block text-sm font-medium text-gray-700">Nome Completo</label>

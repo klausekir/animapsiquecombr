@@ -40,6 +40,7 @@ require_once 'config.php';
             ?>
 
             <form action="processa_login" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
                 <div class="mb-6">
                     <label for="email" class="block text-gray-700 text-sm font-bold mb-2">E-mail</label>
                     <input type="email" id="email" name="email" required class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-teal-500" placeholder="seu.email@exemplo.com">

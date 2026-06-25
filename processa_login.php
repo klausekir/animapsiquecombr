@@ -16,6 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 }
 
+// Valida token CSRF
+if (!hash_equals($_SESSION['csrf_token'] ?? '', $_POST['csrf_token'] ?? '')) {
+    http_response_code(403);
+    $_SESSION['login_error'] = 'Requisição inválida. Por favor, tente novamente.';
+    header('Location: login.php');
+    exit;
+}
+
 
 
 // Pega os dados do formulário
