@@ -1,0 +1,35 @@
+# Ativa o motor de reescrita de URL
+RewriteEngine On
+
+# --- REDIRECIONAMENTOS DE LEGADO (301) ---
+# Redireciona URLs antigas para as novas páginas correspondentes
+
+# Autor -> Sobre
+RewriteRule ^author/nara-silva/?$ /sobre [R=301,L]
+
+# Profissionais -> Sobre
+RewriteRule ^profissionais/?$ /sobre [R=301,L]
+
+# Portfolio (Psicoterapia) -> Executivos (Página de Vendas)
+RewriteRule ^portfolio-items/psicoterapia-on-line/?$ /executivos.php [R=301,L]
+
+# Loja e Produtos -> Home (Já que não existe mais loja)
+RewriteRule ^loja/?.*$ / [R=301,L]
+RewriteRule ^categoria-produto/?.*$ / [R=301,L]
+
+# --- FIM REDIRECIONAMENTOS ---
+
+# Ignora reescrita para diretórios e arquivos que já existem
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+
+# Reescrita para remover a extensão .php (APENAS para arquivos .php)
+# A flag [QSA] (Query String Append) é crucial aqui.
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [QSA,L]
+
+# Redireciona permanentemente qualquer tentativa de acessar a URL com .php
+RewriteCond %{THE_REQUEST} "^GET .*\.php" [NC]
+RewriteRule ^(.*)\.php$ /$1 [R=301,L]
