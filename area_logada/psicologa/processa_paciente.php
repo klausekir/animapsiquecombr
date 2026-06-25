@@ -1,8 +1,9 @@
 <?php
 
-
 require_once '../../includes/auth_psicologa.php';
 require_once '../../includes/db.php';
+require_once '../../includes/csrf.php';
+csrf_validate_header();
 
 header('Content-Type: application/json');
 

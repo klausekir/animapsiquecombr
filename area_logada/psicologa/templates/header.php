@@ -22,11 +22,28 @@ try {
     <title><?php echo isset($page_title) ? htmlspecialchars($page_title) . ' - ' : ''; ?>Área da Psicóloga</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <meta name="csrf-token" content="<?php echo htmlspecialchars($_SESSION['csrf_token'] ?? ''); ?>">
     <style>
         :root {
             --cor-primaria: <?php echo $cor_primaria; ?>;
         }
     </style>
+    <script>
+        // Intercepta todos os fetch() e envia o token CSRF automaticamente
+        (function() {
+            const _fetch = window.fetch;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            window.fetch = function(url, options = {}) {
+                if (options.method && options.method.toUpperCase() !== 'GET') {
+                    options.headers = options.headers || {};
+                    if (!(options.headers instanceof Headers)) {
+                        options.headers['X-CSRF-Token'] = csrfToken;
+                    }
+                }
+                return _fetch(url, options);
+            };
+        })();
+    </script>
 </head>
 <body class="h-full">
 <div class="min-h-full">

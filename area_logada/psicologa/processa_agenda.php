@@ -17,6 +17,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['user_type'] !== 'psicologa') {
     echo json_encode(['success' => false, 'message' => 'Acesso não autorizado.']);
     exit;
 }
+require_once $base_path . '/includes/csrf.php';
+csrf_validate_header();
 require_once $base_path . '/includes/db.php';
 
 // CORREÇÃO: Lê a ação diretamente do array $_POST, que é preenchido pelo FormData.

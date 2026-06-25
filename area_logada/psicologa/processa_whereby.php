@@ -3,6 +3,8 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../config.php';
 require_once __DIR__ . '/../../includes/auth_psicologa.php';
 require_once __DIR__ . '/../../includes/db.php';
+require_once __DIR__ . '/../../includes/csrf.php';
+csrf_validate_header();
 
 $response = ['success' => false, 'message' => 'Ação inválida.'];
 $paciente_id = $_POST['paciente_id'] ?? null;
