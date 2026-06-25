@@ -2,11 +2,14 @@
 require_once '../../config.php';
 require_once '../../includes/auth_psicologa.php';
 require_once '../../includes/db.php';
+require_once '../../includes/csrf.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: configuracoes_site.php');
     exit;
 }
+
+csrf_validate_post('configuracoes_site.php');
 
 define('UPLOAD_DIR', __DIR__ . '/../../uploads/site/');
 

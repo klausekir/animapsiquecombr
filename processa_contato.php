@@ -5,10 +5,6 @@ Conteúdo para: processa_contato.php
 ===================================================================
 */
 
-// Ativa a exibição de erros para depuração
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 require_once 'config.php'; // Usando config real
 require_once 'includes/email.php';
 

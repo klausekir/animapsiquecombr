@@ -15,8 +15,17 @@
 
 
 // Inicia a sessão em todas as páginas que incluírem este arquivo
+// IMPORTANTE: configurar cookies seguros ANTES de session_start()
 
 if (session_status() == PHP_SESSION_NONE) {
+
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path'     => '/',
+        'secure'   => true,
+        'httponly' => true,
+        'samesite' => 'Strict',
+    ]);
 
     session_start();
 
@@ -98,15 +107,6 @@ date_default_timezone_set('America/Sao_Paulo');
 
 
 // --- SEGURANÇA DE SESSÃO ---
-
-// Configura cookies de sessão seguros (HttpOnly, Secure, SameSite)
-session_set_cookie_params([
-    'lifetime' => 0,
-    'path'     => '/',
-    'secure'   => true,
-    'httponly' => true,
-    'samesite' => 'Strict',
-]);
 
 // Gera token CSRF na sessão se ainda não existir
 if (empty($_SESSION['csrf_token'])) {
