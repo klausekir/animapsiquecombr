@@ -18,11 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // Coleta e sanitiza os dados do formulário
-$nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
-$email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
-$telefone = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
-$idade = filter_input(INPUT_POST, 'idade', FILTER_SANITIZE_NUMBER_INT);
-$motivo = filter_input(INPUT_POST, 'motivo', FILTER_SANITIZE_STRING);
+$nome     = htmlspecialchars(trim(filter_input(INPUT_POST, 'nome',     FILTER_DEFAULT) ?? ''));
+$email    = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+$telefone = htmlspecialchars(trim(filter_input(INPUT_POST, 'telefone', FILTER_DEFAULT) ?? ''));
+$idade    = filter_input(INPUT_POST, 'idade', FILTER_SANITIZE_NUMBER_INT);
+$motivo   = htmlspecialchars(trim(filter_input(INPUT_POST, 'motivo',   FILTER_DEFAULT) ?? ''));
 
 if (!$nome || !$email || !$telefone) {
     // Idealmente, adicionar uma mensagem de erro na sessão
@@ -42,7 +42,7 @@ $corpo_psicologa = "
         <li><strong>E-mail:</strong> {$email}</li>
         <li><strong>Telefone:</strong> {$telefone}</li>
         <li><strong>Idade:</strong> {$idade}</li>
-        <li><strong>Motivo da Busca:</strong><br>" . nl2br(htmlspecialchars($motivo)) . "</li>
+        <li><strong>Motivo da Busca:</strong><br>" . nl2br($motivo) . "</li>
     </ul>
 ";
 
@@ -63,21 +63,7 @@ $enviado_psicologa = enviar_email(SMTP_USER, 'Psicóloga', $assunto_psicologa, $
 if ($enviado_psicologa) {
     enviar_email($email, $nome, $assunto_paciente, $corpo_paciente);
     
-    // Verifica se há uma URL de redirecionamento personalizada
-    $redirect = filter_input(INPUT_POST, 'redirect', FILTER_SANITIZE_URL);
-    
-    if ($redirect) {
-        // Verifica se já tem parâmetros na URL
-        $separator = (strpos($redirect, '?') !== false) ? '&' : '?';
-        // Se não tiver origem definida, adiciona padrão
-        if (strpos($redirect, 'origem=') === false) {
-            $redirect .= $separator . "origem=formulario";
-        }
-        header("Location: $redirect");
-    } else {
-        // Padrão: ir para página de confirmação
-        header('Location: confirmacao.php?origem=formulario');
-    }
+    header('Location: confirmacao.php?origem=formulario');
 } else {
     // Se falhar, redireciona com uma mensagem de erro genérica
     header('Location: contato.php?erro=envio');
